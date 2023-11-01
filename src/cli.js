@@ -11,12 +11,12 @@ const caminho = process.argv;
 
 // o identificador é uma propriedade criada para nomear os arquivos que são links
 //iniciamos a var vazia para, em situ de leitura de arquivo, não aparecer "undefined"
-function imprimeLista(valida, resultado, identificador = '') {
+async function imprimeLista(valida, resultado, identificador = '') {
 	if(valida){
 		  console.log(
     chalk.yellow('lista validada'),
     chalk.black.bgGreen(identificador),
-    listaValidada(resultado));
+    await listaValidada(resultado));
 	} else {
 		  console.log(
     chalk.yellow('lista de links'),
