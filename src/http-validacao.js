@@ -8,19 +8,33 @@ async function checaStatus(listaURLs) {
 	const arrStatus = await Promise.all(
 		listaURLs.map(async (url) => {
 			//fetch só consegue lidar com um link por vez, então passar uma lista inteira n funciona
-			const response = await fetch(url)
-			return response.status;
+			try {
+				const response = await fetch(url)
+				return `${response.status} - ${response.statusText}`;
+			} catch (erro) {
+				manejaErros(erro);
+			}
 		})
 	)
 	return arrStatus;
 }
 
-
-export default async function listaValidada(listaDeLinks) {
-	const links = extraiLinks(listaDeLinks);
-	const status = await checaStatus(links);
-	console.log(status);
-	return status;
+function manejaErros (erro) {
+  if (erro.cause.code === 'ENOTFOUND') {
+    return 'link não encontrado';
+  } else {
+    return 'ocorreu algum erro';
+  }
 }
 
-//[gatinho salsicha](http://gatinhosalsicha.com.br/)
+
+export default async function listaValidada (listaDeLinks) {
+  const links = extraiLinks(listaDeLinks);
+  const status = await checaStatus(links);
+  //para retornar objeto use chaves apos arrow func
+
+  return listaDeLinks.map((objeto, indice) => ({
+    ...objeto,
+    status: status[indice]
+  }))
+}
